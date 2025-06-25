@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class Remolque {
     private int id;
+    private String nombre;
     private double capacidadPeso;
     private double capacidadVolumen;
     private double pesoDisponible;
@@ -22,9 +23,10 @@ public class Remolque {
     private double consumoPorKgKm;
     private ArrayList<Mercaderia> cargasAsignadas = new ArrayList<>();
 
-    public Remolque(int id, Parte del equipo trabajando juntos en el aula, afinando detalles del proyecto antes de enviarlo al CLEI. capacidadPeso, double capacidadVolumen, String ubicacionActual,
+    public Remolque(int id, String nombre, double capacidadPeso, double capacidadVolumen, String ubicacionActual,
                     String destino, double distanciaDestino, double consumoPorKgKm) {
         this.id = id;
+        this.nombre = nombre;
         this.capacidadPeso = capacidadPeso;
         this.capacidadVolumen = capacidadVolumen;
         this.pesoDisponible = capacidadPeso;
@@ -36,6 +38,7 @@ public class Remolque {
     }
 
     public int getId() { return id; }
+    public String getNombre() { return nombre; }
     public double getPesoDisponible() { return pesoDisponible; }
     public double getVolumenDisponible() { return volumenDisponible; }
     public double getDistanciaDestino() { return distanciaDestino; }
