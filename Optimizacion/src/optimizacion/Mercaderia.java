@@ -1,27 +1,19 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package optimizacion;
 
-/**
- *
- * @author mathiasreimer
- */
 public class Mercaderia {
-    private int id;
-    private double peso;
+    private int idMercaderia = 1;
+    private double peso = 0.0;
     private double volumen;
     private String destino;
 
     public Mercaderia(int id, double peso, double volumen, String destino) {
-        this.id = id;
+        this.idMercaderia = id;
         this.peso = peso;
         this.volumen = volumen;
         this.destino = destino;
     }
 
-    public int getId() { return id; }
+    public int getId() { return idMercaderia; }
     public double getPeso() { return peso; }
     public double getVolumen() { return volumen; }
     public String getDestino() { return destino; }

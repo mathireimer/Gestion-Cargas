@@ -60,8 +60,7 @@ public class MainFrame extends JFrame {
                 double dist = Double.parseDouble(tfDistancia.getText());
                 double cons = Double.parseDouble(tfConsumo.getText());
 
-                int id = remolqueId++;
-                Remolque nuevo = new Remolque(id, "Remolque" + id, peso, vol, ubi, des, dist, cons);
+                Remolque nuevo = new Remolque(remolqueId++, peso, vol, ubi, des, dist, cons);
                 remolques.add(nuevo);
                 JOptionPane.showMessageDialog(this, "Remolque agregado exitosamente");
 
