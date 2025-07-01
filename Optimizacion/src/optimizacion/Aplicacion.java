@@ -442,8 +442,8 @@ public class Aplicacion extends javax.swing.JFrame {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("remolques.txt", true))) {
             writer.write("ID: " + r.getId()
                     + ", Nombre: " + r.getNombre()
-                    + ", Volumen: " + r.getVolumenDisponible()
-                    + ", Peso: " + r.getPesoDisponible());
+                    + ", Volumen: " + r.getCapacidadVolumen()
+                    + ", Peso: " + r.getCapacidadPeso());
             writer.newLine();
         } catch (IOException ex) {
             javax.swing.JOptionPane.showMessageDialog(this, "❌ Error al guardar archivo: " + ex.getMessage());

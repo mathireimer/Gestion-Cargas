@@ -10,7 +10,7 @@ public class Remolque {
     private String destino;
     private double distancia;
 
-    public Remolque(int id, String nombre, double capacidadVolumen, double capacidadPeso, String destino, double distancia) {
+    public Remolque(int id, String nombre, double capacidadVolumen, double capacidadPeso, String destino, String destino1, double distancia, double par1) {
         this.id = id;
         this.nombre = nombre;
         this.capacidadVolumen = capacidadVolumen;

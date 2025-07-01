@@ -1,1 +1,2 @@
 ID: 1, Peso: 5.0, Volumen: 9.0, Destino: Ciudad del Este, Distancia: 327
+ID: 2, Peso: 4.0, Volumen: 55.0, Destino: Ciudad del Este, Distancia: 327
