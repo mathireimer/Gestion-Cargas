@@ -1,2 +1,6 @@
 ID: 1, Peso: 5.0, Volumen: 9.0, Destino: Ciudad del Este, Distancia: 327
 ID: 2, Peso: 4.0, Volumen: 55.0, Destino: Ciudad del Este, Distancia: 327
+ID: 3, Peso: 3.0, Volumen: 3.0, Destino: Ciudad del Este, Distancia: 327
+ID: 4, Peso: 20.0, Volumen: 60.0, Destino: Canindeyu, Distancia: 425
+ID: 5, Peso: 1.0, Volumen: 2.0, Destino: Lambaré, Distancia: 12
+ID: 6, Peso: 3.0, Volumen: 4.0, Destino: Canindeyu, Distancia: 425
