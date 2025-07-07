@@ -5,3 +5,4 @@ ID: 4, Nombre: hola, Volumen: 2.0, Peso: 2.0
 ID: 5, Nombre: ejemplo7, Volumen: 10.0, Peso: 20.0
 ID: 6, Nombre: ejemploo, Volumen: 2.0, Peso: 2.0
 ID: 7, Nombre: ejemplo4, Volumen: 1.0, Peso: 1.0
+ID: 8, Nombre: ruth, Volumen: 12.0, Peso: 13.0

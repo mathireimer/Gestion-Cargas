@@ -1,8 +1,6 @@
-// Archivo: Aplicacion.java
-// Interfaz con tablas embellecidas
-
 package optimizacion;
 
+import com.formdev.flatlaf.FlatIntelliJLaf; // NUEVO IMPORT
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -11,9 +9,6 @@ import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.ArrayList;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
-import optimizacion.OptimizacionPanel;
-import java.util.HashMap;
-
 
 public class Aplicacion extends JFrame {
     private ArrayList<Remolque> listaRemolques = new ArrayList<>();
@@ -35,74 +30,63 @@ public class Aplicacion extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        UIManager.put("TabbedPane.selected", new Color(200, 220, 255));
-        UIManager.put("TabbedPane.contentAreaColor", new Color(230, 240, 255));
-        UIManager.put("TabbedPane.background", new Color(180, 200, 255));
-        UIManager.put("TabbedPane.foreground", Color.BLACK);
-
         tabs = new JTabbedPane();
         tabs.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
-        tabs.addTab("Agregar Remolque", crearPanelConTransicion(crearPanelAgregarRemolque()));
-        tabs.addTab("Agregar Carga", crearPanelConTransicion(crearPanelAgregarCarga()));
-        tabs.addTab("Lista de Remolques", crearPanelConTransicion(crearPanelListaRemolques()));
-        tabs.addTab("Lista de Cargas", crearPanelConTransicion(crearPanelListaCargas()));
-tabs.addTab("Optimización", new OptimizacionPanel());
+        tabs.addTab("Agregar Remolque", crearPanelAgregarRemolque());
+        tabs.addTab("Agregar Carga", crearPanelAgregarCarga());
+        tabs.addTab("Lista de Remolques", crearPanelListaRemolques());
+        tabs.addTab("Lista de Cargas", crearPanelListaCargas());
 
         add(tabs, BorderLayout.CENTER);
         cargarMercaderiasEnTabla();
         cargarRemolquesEnTabla();
     }
 
-    private JPanel crearPanelConTransicion(JPanel panelOriginal) {
-        JPanel wrapper = new JPanel(new BorderLayout());
-        panelOriginal.setOpaque(false);
-        wrapper.setOpaque(false);
-        Timer timer = new Timer(5, null);
-        final float[] alpha = {0};
+   private JTable crearTabla(Object[][] data, String[] columns) {
+    JTable tabla = new JTable(new DefaultTableModel(data, columns));
+    tabla.setFillsViewportHeight(true);
+    tabla.setRowHeight(26);
+    tabla.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+    tabla.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
+    tabla.getTableHeader().setBackground(new Color(200, 220, 255));
+    tabla.getTableHeader().setForeground(new Color(30, 30, 30));
+    tabla.setGridColor(new Color(220, 220, 220));
+    tabla.setShowGrid(true);
+    tabla.setSelectionBackground(new Color(180, 200, 240));
+    tabla.setSelectionForeground(Color.BLACK);
 
-        timer.addActionListener(new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                alpha[0] += 0.05f;
-                if (alpha[0] >= 1f) {
-                    alpha[0] = 1f;
-                    timer.stop();
-                }
-                panelOriginal.repaint();
-            }
-        });
-        timer.start();
-
-        wrapper.add(panelOriginal);
-        return wrapper;
+    DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+    centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+    for (int i = 0; i < tabla.getColumnCount(); i++) {
+        tabla.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
     }
 
-    private JTable crearTabla(Object[][] data, String[] columns) {
-        JTable tabla = new JTable(new DefaultTableModel(data, columns));
-        tabla.setFillsViewportHeight(true);
-        tabla.setRowHeight(25);
-        tabla.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        tabla.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        tabla.getTableHeader().setBackground(new Color(180, 200, 255));
-        tabla.getTableHeader().setForeground(Color.BLACK);
-        tabla.setGridColor(Color.LIGHT_GRAY);
-        tabla.setShowGrid(true);
+    return tabla;
+}
 
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        for (int i = 0; i < tabla.getColumnCount(); i++) {
-            tabla.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
-
-        return tabla;
-    }
 
     private JPanel crearPanelListaRemolques() {
-        JPanel panel = new JPanel(new BorderLayout());
-        tablaRemolques = crearTabla(new Object[][]{}, new String[]{"ID", "Nombre", "Capacidad Peso", "Capacidad Volumen"});
-        panel.add(new JScrollPane(tablaRemolques), BorderLayout.CENTER);
-        return panel;
-    }
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.setBackground(new Color(245, 248, 255));
+
+    JLabel titulo = new JLabel("Lista de Remolques");
+    titulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
+    titulo.setHorizontalAlignment(SwingConstants.CENTER);
+    titulo.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+    titulo.setForeground(new Color(33, 37, 41));
+
+    tablaRemolques = crearTabla(new Object[][]{}, new String[]{"ID", "Nombre", "Capacidad Peso", "Capacidad Volumen"});
+
+    JScrollPane scrollPane = new JScrollPane(tablaRemolques);
+    scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
+
+    panel.add(titulo, BorderLayout.NORTH);
+    panel.add(scrollPane, BorderLayout.CENTER);
+
+    return panel;
+}
+
 
     private JPanel crearPanelListaCargas() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -112,101 +96,210 @@ tabs.addTab("Optimización", new OptimizacionPanel());
     }
 
     private JPanel crearPanelAgregarRemolque() {
-        JPanel panel = new JPanel(null);
-        panel.setBackground(new Color(180, 200, 255));
+    JPanel panel = new JPanel(new GridBagLayout());
+    panel.setBackground(new Color(245, 248, 255));
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(10, 10, 10, 10);
+    gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel titulo = new JLabel("Agregar Remolque");
-        titulo.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        titulo.setBounds(300, 20, 300, 30);
-        panel.add(titulo);
+    JLabel titulo = new JLabel("Agregar Remolque");
+    titulo.setFont(new Font("Segoe UI", Font.BOLD, 28));
+    titulo.setForeground(new Color(33, 37, 41));
 
-        JLabel lblNombre = new JLabel("Nombre:");
-        JLabel lblPeso = new JLabel("Capacidad Peso:");
-        JLabel lblVolumen = new JLabel("Capacidad Volumen:");
+    JLabel lblNombre = new JLabel("Nombre del Remolque:");
+    JLabel lblPeso = new JLabel("Capacidad Máxima (kg):");
+    JLabel lblVolumen = new JLabel("Capacidad Volumen (m³):");
 
-        nombreRemolque = new JTextField();
-        pesoRemolque = new JTextField();
-        volumenRemolque = new JTextField();
+    Font labelFont = new Font("Segoe UI", Font.PLAIN, 18);
+    lblNombre.setFont(labelFont);
+    lblPeso.setFont(labelFont);
+    lblVolumen.setFont(labelFont);
 
-        JButton btnAgregar = new JButton("Agregar");
-        btnAgregar.addActionListener(e -> agregarRemolqueYGuardarArchivo());
+    nombreRemolque = new JTextField(20);
+    pesoRemolque = new JTextField(20);
+    volumenRemolque = new JTextField(20);
 
-        lblNombre.setBounds(60, 100, 150, 25);
-        nombreRemolque.setBounds(200, 100, 200, 25);
+    Font fieldFont = new Font("Segoe UI", Font.PLAIN, 16);
+    nombreRemolque.setFont(fieldFont);
+    pesoRemolque.setFont(fieldFont);
+    volumenRemolque.setFont(fieldFont);
 
-        lblPeso.setBounds(60, 140, 150, 25);
-        pesoRemolque.setBounds(200, 140, 200, 25);
+    JButton btnAgregar = new JButton("Guardar Remolque") {
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(new Color(100, 149, 237)); // Fondo del botón
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+            super.paintComponent(g);
+            g2.dispose();
+        }
 
-        lblVolumen.setBounds(60, 180, 150, 25);
-        volumenRemolque.setBounds(200, 180, 200, 25);
+        @Override
+        protected void paintBorder(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setColor(new Color(70, 130, 180)); // Borde del botón
+            g2.setStroke(new BasicStroke(2));
+            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
+            g2.dispose();
+        }
+    };
 
-        btnAgregar.setBounds(200, 230, 120, 30);
+    btnAgregar.setFont(new Font("Segoe UI", Font.BOLD, 18));
+    btnAgregar.setForeground(Color.WHITE);
+    btnAgregar.setContentAreaFilled(false);
+    btnAgregar.setOpaque(false);
+    btnAgregar.setFocusPainted(false);
+    btnAgregar.setPreferredSize(new Dimension(260, 45));
+    btnAgregar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+    btnAgregar.addActionListener(e -> agregarRemolqueYGuardarArchivo());
 
-        panel.add(lblNombre); panel.add(nombreRemolque);
-        panel.add(lblPeso); panel.add(pesoRemolque);
-        panel.add(lblVolumen); panel.add(volumenRemolque);
-        panel.add(btnAgregar);
+    // Posicionar todo centrado
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.gridwidth = 2;
+    gbc.anchor = GridBagConstraints.CENTER;
+    panel.add(titulo, gbc);
 
-        return panel;
-    }
+    gbc.gridwidth = 1;
+    gbc.anchor = GridBagConstraints.EAST;
+    gbc.gridy++;
+    panel.add(lblNombre, gbc);
+    gbc.gridx = 1;
+    panel.add(nombreRemolque, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(lblPeso, gbc);
+    gbc.gridx = 1;
+    panel.add(pesoRemolque, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(lblVolumen, gbc);
+    gbc.gridx = 1;
+    panel.add(volumenRemolque, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    gbc.gridwidth = 2;
+    gbc.anchor = GridBagConstraints.CENTER;
+    panel.add(btnAgregar, gbc);
+
+    return panel;
+}
+
+
+
+
 
     private JPanel crearPanelAgregarCarga() {
-        JPanel panel = new JPanel(null);
-        panel.setBackground(new Color(230, 240, 255));
+    JPanel panel = new JPanel(new GridBagLayout());
+    panel.setBackground(new Color(245, 248, 255));
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(10, 10, 10, 10);
+    gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel titulo = new JLabel("Agregar Mercadería");
-        titulo.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        titulo.setBounds(290, 20, 300, 30);
-        panel.add(titulo);
+    JLabel titulo = new JLabel("Agregar Mercadería");
+    titulo.setFont(new Font("Segoe UI", Font.BOLD, 28));
+    titulo.setForeground(new Color(33, 37, 41));
 
-        JLabel lblPeso = new JLabel("Peso:");
-        JLabel lblVolumen = new JLabel("Volumen:");
-        JLabel lblDestino = new JLabel("Destino:");
-        JLabel lblDistancia = new JLabel("Distancia:");
+    JLabel lblPeso = new JLabel("Peso (kg):");
+    JLabel lblVolumen = new JLabel("Volumen (m³):");
+    JLabel lblDestino = new JLabel("Destino:");
+    JLabel lblDistancia = new JLabel("Distancia (km):");
 
-        pesoCarga = new JTextField();
-        volumenCarga = new JTextField();
-        distanciaCarga = new JTextField();
-        destinoCombo = new JComboBox<>(new String[]{"Lambaré", "Ciudad del Este", "Encarnación", "Canindeyu"});
-        destinoCombo.addActionListener(e -> actualizarDistancia());
+    Font labelFont = new Font("Segoe UI", Font.PLAIN, 18);
+    lblPeso.setFont(labelFont);
+    lblVolumen.setFont(labelFont);
+    lblDestino.setFont(labelFont);
+    lblDistancia.setFont(labelFont);
 
-        JButton btnAgregar = new JButton("Agregar");
-        btnAgregar.addActionListener(e -> agregarCargaYGuardarArchivo());
+    pesoCarga = new JTextField(20);
+    volumenCarga = new JTextField(20);
+    distanciaCarga = new JTextField(20);
+    distanciaCarga.setEditable(false); // para que no se modifique manualmente
 
-        lblPeso.setBounds(60, 100, 150, 25);
-        pesoCarga.setBounds(200, 100, 200, 25);
+    Font fieldFont = new Font("Segoe UI", Font.PLAIN, 16);
+    pesoCarga.setFont(fieldFont);
+    volumenCarga.setFont(fieldFont);
+    distanciaCarga.setFont(fieldFont);
 
-        lblVolumen.setBounds(60, 140, 150, 25);
-        volumenCarga.setBounds(200, 140, 200, 25);
+    destinoCombo = new JComboBox<>(new String[]{"Lambaré", "Ciudad del Este", "Encarnación", "Canindeyu"});
+    destinoCombo.setFont(fieldFont);
+    destinoCombo.addActionListener(e -> actualizarDistancia());
 
-        lblDestino.setBounds(60, 180, 150, 25);
-        destinoCombo.setBounds(200, 180, 200, 25);
+    JButton btnAgregar = new JButton("Guardar Mercadería") {
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(new Color(100, 149, 237));
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+            super.paintComponent(g);
+            g2.dispose();
+        }
 
-        lblDistancia.setBounds(60, 220, 150, 25);
-        distanciaCarga.setBounds(200, 220, 200, 25);
+        @Override
+        protected void paintBorder(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setColor(new Color(70, 130, 180));
+            g2.setStroke(new BasicStroke(2));
+            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
+            g2.dispose();
+        }
+    };
 
-        btnAgregar.setBounds(200, 270, 120, 30);
+    btnAgregar.setFont(new Font("Segoe UI", Font.BOLD, 18));
+    btnAgregar.setForeground(Color.WHITE);
+    btnAgregar.setContentAreaFilled(false);
+    btnAgregar.setOpaque(false);
+    btnAgregar.setFocusPainted(false);
+    btnAgregar.setPreferredSize(new Dimension(260, 45));
+    btnAgregar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+    btnAgregar.addActionListener(e -> agregarCargaYGuardarArchivo());
 
-        panel.add(lblPeso); panel.add(pesoCarga);
-        panel.add(lblVolumen); panel.add(volumenCarga);
-        panel.add(lblDestino); panel.add(destinoCombo);
-        panel.add(lblDistancia); panel.add(distanciaCarga);
-        panel.add(btnAgregar);
+    // Posicionar elementos centrados
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.gridwidth = 2;
+    gbc.anchor = GridBagConstraints.CENTER;
+    panel.add(titulo, gbc);
 
-        return panel;
-    }
+    gbc.gridwidth = 1;
+    gbc.anchor = GridBagConstraints.EAST;
+    gbc.gridy++;
+    panel.add(lblPeso, gbc);
+    gbc.gridx = 1;
+    panel.add(pesoCarga, gbc);
 
-    private JPanel crearPanelOptimizar() {
-        JPanel panel = new JPanel(new BorderLayout());
-        JButton btnOptimizar = new JButton("Optimizar Asignación");
-        btnOptimizar.addActionListener(e -> {
-            ArrayList<Mercaderia> mercaderias = OptimizadorCarga.cargarMercaderias("mercaderias.txt");
-            ArrayList<Remolque> remolques = OptimizadorCarga.cargarRemolques("remolques.txt");
-            ArrayList<Asignacion> asignaciones = OptimizadorCarga.optimizarAsignacion(remolques, mercaderias);
-        });
-        panel.add(btnOptimizar, BorderLayout.NORTH);
-        return panel;
-    }
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(lblVolumen, gbc);
+    gbc.gridx = 1;
+    panel.add(volumenCarga, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(lblDestino, gbc);
+    gbc.gridx = 1;
+    panel.add(destinoCombo, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(lblDistancia, gbc);
+    gbc.gridx = 1;
+    panel.add(distanciaCarga, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    gbc.gridwidth = 2;
+    gbc.anchor = GridBagConstraints.CENTER;
+    panel.add(btnAgregar, gbc);
+
+    return panel;
+}
+
 
     private void actualizarDistancia() {
         String destino = destinoCombo.getSelectedItem().toString();
@@ -232,7 +325,6 @@ tabs.addTab("Optimización", new OptimizacionPanel());
                 String peso = partes[1].split(":")[1].trim();
                 String volumen = partes[2].split(":")[1].trim();
                 String destino = partes[3].split(":")[1].trim();
-                int distancia = Integer.parseInt(partes[4].split(":")[1].trim());
                 modelo.addRow(new Object[]{idStr, peso, volumen, destino});
             }
             reader.close();
@@ -241,9 +333,6 @@ tabs.addTab("Optimización", new OptimizacionPanel());
         }
     }
 
-    
-
-    
     private void cargarRemolquesEnTabla() {
         try {
             DefaultTableModel modelo = (DefaultTableModel) tablaRemolques.getModel();
@@ -340,6 +429,11 @@ tabs.addTab("Optimización", new OptimizacionPanel());
     }
 
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(new FlatIntelliJLaf());
+        } catch (Exception e) {
+            System.err.println("No se pudo aplicar FlatLaf: " + e);
+        }
         SwingUtilities.invokeLater(() -> new Aplicacion().setVisible(true));
     }
 }
