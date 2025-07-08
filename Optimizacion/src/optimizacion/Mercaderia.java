@@ -23,6 +23,15 @@ public class Mercaderia {
         this.distancia = distancia;
     }
 
+    public int getIdMercaderia() {
+        return idMercaderia;
+    }
+
+    public void setIdMercaderia(int idMercaderia) {
+        this.idMercaderia = idMercaderia;
+    }
+
+    
     
     public int getId() { return idMercaderia; }
     public double getPeso() { return peso; }

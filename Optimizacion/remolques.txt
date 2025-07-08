@@ -1,8 +1,3 @@
-ID: 1, Nombre: aa, Volumen: 9.0, Peso: 8.0
-ID: 2, Nombre: aegr, Volumen: 9.0, Peso: 8.0
-ID: 3, Nombre: d, Volumen: 1.0, Peso: 1.0
-ID: 4, Nombre: hola, Volumen: 2.0, Peso: 2.0
-ID: 5, Nombre: ejemplo7, Volumen: 10.0, Peso: 20.0
-ID: 6, Nombre: ejemploo, Volumen: 2.0, Peso: 2.0
-ID: 7, Nombre: ejemplo4, Volumen: 1.0, Peso: 1.0
-ID: 8, Nombre: ruth, Volumen: 12.0, Peso: 13.0
+ID: 1, Nombre: volvo, Volumen: 10.0, Peso: 10.0
+ID: 2, Nombre: mercedes, Volumen: 5.0, Peso: 5.0
+ID: 3, Nombre: scania, Volumen: 15.0, Peso: 15.0

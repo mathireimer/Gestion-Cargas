@@ -44,9 +44,48 @@ this.volumenDisponible = capacidadVolumen;
         this.volumenDisponible -= m.getVolumen();
     }
 
+    public Remolque(int id, String nombre, double capacidadVolumen, double capacidadPeso, String destino, double distancia, double consumoPorKgKm, double distanciaDestino, double pesoDisponible, double volumenDisponible) {
+        this.id = id;
+        this.nombre = nombre;
+        this.capacidadVolumen = capacidadVolumen;
+        this.capacidadPeso = capacidadPeso;
+        this.destino = destino;
+        this.distancia = distancia;
+        this.consumoPorKgKm = consumoPorKgKm;
+        this.distanciaDestino = distanciaDestino;
+        this.pesoDisponible = pesoDisponible;
+        this.volumenDisponible = volumenDisponible;
+    }
+
+    public double getPesoMaximo() {
+    return capacidadPeso;
+}
+
+public double getVolumenMaximo() {
+    return capacidadVolumen;
+}
+
+    
     public int getId() {
         return id;
     }
+
+    public double getPesoDisponible() {
+        return pesoDisponible;
+    }
+
+    public void setPesoDisponible(double pesoDisponible) {
+        this.pesoDisponible = pesoDisponible;
+    }
+
+    public double getVolumenDisponible() {
+        return volumenDisponible;
+    }
+
+    public void setVolumenDisponible(double volumenDisponible) {
+        this.volumenDisponible = volumenDisponible;
+    }
+    
 
     public String getNombre() {
         return nombre;

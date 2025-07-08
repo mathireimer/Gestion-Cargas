@@ -4,6 +4,13 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
+
+import java.util.HashSet;
+import java.util.stream.Collectors;
+import java.util.List;
 
 public class OptimizadorCarga {
 
@@ -108,13 +115,124 @@ public class OptimizadorCarga {
         return asignaciones;
     }
 
+    
+     private static double[] calcularCosto(double pesoTotal, List<String> ruta) {
+        double consumoBasePorKm = 0.3;
+        double incrementoPorKg = 0.0001;
+        double costoCombustiblePorLitro = 1.25;
+
+        Map<String, Integer> destinos = new HashMap<>();
+        destinos.put("Asunción", 0);
+        destinos.put("Lambaré", 12);
+        destinos.put("Ciudad del Este", 327);
+        destinos.put("Encarnación", 375);
+        destinos.put("Canindeyu", 425);
+
+        double distanciaTotal = 0;
+        List<String> rutaCompleta = new ArrayList<>();
+        rutaCompleta.add("Asunción");
+        rutaCompleta.addAll(ruta);
+        rutaCompleta.add("Asunción");
+
+        for (int i = 0; i < rutaCompleta.size() - 1; i++) {
+            String origen = rutaCompleta.get(i);
+            String destino = rutaCompleta.get(i + 1);
+            int distancia = 0;
+            if (origen.equals("Asunción")) {
+                distancia = destinos.get(destino);
+            } else if (destino.equals("Asunción")) {
+                distancia = destinos.get(origen);
+            } else {
+                distancia = destinos.get(origen) + destinos.get(destino);
+            }
+            distanciaTotal += distancia;
+        }
+
+        double consumoTotal = distanciaTotal * (consumoBasePorKm + pesoTotal * incrementoPorKg);
+        double costoTotal = consumoTotal * costoCombustiblePorLitro;
+
+        return new double[]{distanciaTotal, costoTotal};
+    }
+
+    public static List<Asignacion> optimizar(List<Mercaderia> mercaderias, List<Remolque> remolques) {
+        List<Asignacion> mejoresAsignaciones = new ArrayList<>();
+        Set<String> asignacionesUnicas = new HashSet<>();
+        double mejorCostoTotal = Double.MAX_VALUE;
+
+        int n = mercaderias.size();
+        int totalCombinaciones = 1 << n; // 2^n
+
+        for (int i = 1; i < totalCombinaciones; i++) {
+            List<Mercaderia> grupo1 = new ArrayList<>();
+            List<Mercaderia> grupo2 = new ArrayList<>();
+
+            for (int j = 0; j < n; j++) {
+                if (((i >> j) & 1) == 1) {
+                    grupo1.add(mercaderias.get(j));
+                } else {
+                    grupo2.add(mercaderias.get(j));
+                }
+            }
+
+            List<List<Mercaderia>> combinacion1 = Arrays.asList(grupo1, grupo2);
+            List<List<Mercaderia>> combinacion2 = Arrays.asList(grupo2, grupo1);
+
+            for (List<List<Mercaderia>> combinacion : Arrays.asList(combinacion1, combinacion2)) {
+                if (combinacion.size() > remolques.size()) continue;
+
+                List<Asignacion> asignacionesActuales = new ArrayList<>();
+                double costoTotalCombinacion = 0;
+                boolean esValido = true;
+                StringBuilder hashAsignacion = new StringBuilder();
+
+                for (int idx = 0; idx < combinacion.size(); idx++) {
+                    List<Mercaderia> carga = combinacion.get(idx);
+                    Remolque remolque = remolques.get(idx);
+
+                    double pesoTotal = carga.stream().mapToDouble(Mercaderia::getPeso).sum();
+                    double volumenTotal = carga.stream().mapToDouble(Mercaderia::getVolumen).sum();
+
+                    if (pesoTotal > remolque.getPesoMaximo() || volumenTotal > remolque.getVolumenMaximo()) {
+                        esValido = false;
+                        break;
+                    }
+
+                    List<String> destinos = carga.stream()
+                            .map(Mercaderia::getDestino)
+                            .distinct()
+                            .collect(Collectors.toList());
+
+                    double[] distanciaCosto = calcularCosto(pesoTotal, destinos);
+                    double distancia = distanciaCosto[0];
+                    double costo = distanciaCosto[1];
+
+                    hashAsignacion.append(remolque.getId()).append("-").append(carga.toString()).append("-");
+
+                    Asignacion asignacion = new Asignacion (remolque);
+                    carga.forEach(asignacion::agregarMercaderia);
+                    asignacionesActuales.add(asignacion);
+                    costoTotalCombinacion += costo;
+                }
+
+                if (esValido && !asignacionesUnicas.contains(hashAsignacion.toString())) {
+                    asignacionesUnicas.add(hashAsignacion.toString());
+                    if (costoTotalCombinacion < mejorCostoTotal) {
+                        mejorCostoTotal = costoTotalCombinacion;
+                        mejoresAsignaciones = asignacionesActuales;
+                    }
+                }
+            }
+        }
+        return mejoresAsignaciones;
+    }
+    
     public static int calcularDistanciaRuta(ArrayList<String> ruta) {
         HashMap<String, Integer> distancias = new HashMap<>();
         distancias.put("Asunción", 0);
         distancias.put("Lambaré", 12);
         distancias.put("Ciudad del Este", 327);
         distancias.put("Encarnación", 375);
-        distancias.put("Canindeyu", 437);
+        distancias.put("Canindeyu", 425);
 
         int distanciaTotal = 0;
         ArrayList<String> rutaCompleta = new ArrayList<>();
@@ -136,5 +254,4 @@ public class OptimizadorCarga {
 
         return distanciaTotal;
     }
-
 }

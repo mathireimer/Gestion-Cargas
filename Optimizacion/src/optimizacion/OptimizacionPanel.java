@@ -1,11 +1,23 @@
+
 package optimizacion;
 
 import javax.swing.*;
-import java.awt.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.stream.Collectors;
+import java.util.List;
 
 public class OptimizacionPanel extends JPanel {
 
@@ -56,4 +68,42 @@ public class OptimizacionPanel extends JPanel {
         String resumen = OptimizadorCarga.generarResumenAsignaciones(asignaciones);
         resultadoArea.setText(resumen);
     }
+    public void mostrarAsignaciones(List<Asignacion> asignaciones) {
+    StringBuilder resultado = new StringBuilder();
+    int opcion = 1;
+    double costoTotalGeneral = 0;
+
+    resultado.append("--- ASIGNACIÓN ÓPTIMA ---\n");
+    for (Asignacion asignacion : asignaciones) {
+        Remolque remolque = asignacion.getRemolque();
+        List<Mercaderia> mercaderias = asignacion.getMercaderias();
+
+        double pesoTotal = mercaderias.stream().mapToDouble(Mercaderia::getPeso).sum();
+        double volumenTotal = mercaderias.stream().mapToDouble(Mercaderia::getVolumen).sum();
+        List<String> destinos = mercaderias.stream()
+                .map(Mercaderia::getDestino)
+                .distinct()
+                .collect(Collectors.toList());
+
+        double[] distanciaCosto = OptimizadorCarga.calcularCosto(pesoTotal, destinos);
+        double distancia = distanciaCosto[0];
+        double costo = distanciaCosto[1];
+
+        resultado.append(String.format("Remolque #%d\n", remolque.getId()));
+        resultado.append(String.format("Mercaderías transportadas: %s\n",
+                mercaderias.stream().map(m -> String.valueOf(m.getId())).collect(Collectors.toList())));
+        resultado.append(String.format("Destinos: %s\n", destinos));
+        resultado.append(String.format("Peso Total: %.2f kg\n", pesoTotal));
+        resultado.append(String.format("Volumen Total: %.2f m3\n", volumenTotal));
+        resultado.append(String.format("Distancia Total (ida y vuelta): %.2f km\n", distancia));
+        resultado.append(String.format("Costo Total: $%.2f USD\n", costo));
+        resultado.append("\n");
+
+        costoTotalGeneral += costo;
+    }
+    resultado.append(String.format("COSTO TOTAL COMBINADO: $%.2f USD\n", costoTotalGeneral));
+
+    textAreaResultados.setText(resultado.toString());
+}
+
 }
