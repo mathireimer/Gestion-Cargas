@@ -30,8 +30,19 @@ public class Asignacion {
         double consumoTotal = distancia * (consumoBasePorKm + pesoTotal * incrementoPorKg);
         this.costoTransporte = consumoTotal * costoCombustiblePorLitro;
     }
+    @Override
+public String toString() {
+    return "Remolque: " + remolque.getNombre() +
+           "\n→ Mercadería ID: " + mercaderia.getId() +
+           " | Destino: " + mercaderia.getDestino() +
+           " | Peso: " + mercaderia.getPeso() + " kg" +
+           "\nDistancia Total: " + (mercaderia.getDistancia() * 2) + " km (ida y vuelta)" +
+           "\nCosto de Transporte: $" + String.format("%.2f", costoTransporte) + " USD";
+}
+
 
     public Mercaderia getMercaderia() { return mercaderia; }
     public Remolque getRemolque() { return remolque; }
     public double getCostoTransporte() { return costoTransporte; }
 }
+

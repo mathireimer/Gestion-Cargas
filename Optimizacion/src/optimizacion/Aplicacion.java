@@ -10,6 +10,7 @@ import java.io.*;
 import java.util.ArrayList;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
+
 public class Aplicacion extends JFrame {
     private ArrayList<Remolque> listaRemolques = new ArrayList<>();
     private int idRemolque = 1;
@@ -37,6 +38,8 @@ public class Aplicacion extends JFrame {
         tabs.addTab("Agregar Carga", crearPanelAgregarCarga());
         tabs.addTab("Lista de Remolques", crearPanelListaRemolques());
         tabs.addTab("Lista de Cargas", crearPanelListaCargas());
+        tabs.addTab("Optimización", crearPanelOptimizar());
+
 
         add(tabs, BorderLayout.CENTER);
         cargarMercaderiasEnTabla();
@@ -89,11 +92,26 @@ public class Aplicacion extends JFrame {
 
 
     private JPanel crearPanelListaCargas() {
-        JPanel panel = new JPanel(new BorderLayout());
-        tablaCargas = crearTabla(new Object[][]{}, new String[]{"ID", "Peso", "Volumen", "Destino"});
-        panel.add(new JScrollPane(tablaCargas), BorderLayout.CENTER);
-        return panel;
-    }
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.setBackground(new Color(245, 248, 255));
+
+    JLabel titulo = new JLabel("Lista de Cargas");
+    titulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
+    titulo.setHorizontalAlignment(SwingConstants.CENTER);
+    titulo.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+    titulo.setForeground(new Color(33, 37, 41));
+
+    tablaCargas = crearTabla(new Object[][]{}, new String[]{"ID", "Peso", "Volumen", "Destino"});
+
+    JScrollPane scrollPane = new JScrollPane(tablaCargas);
+    scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
+
+    panel.add(titulo, BorderLayout.NORTH);
+    panel.add(scrollPane, BorderLayout.CENTER);
+
+    return panel;
+}
+
 
     private JPanel crearPanelAgregarRemolque() {
     JPanel panel = new JPanel(new GridBagLayout());
@@ -299,6 +317,123 @@ public class Aplicacion extends JFrame {
 
     return panel;
 }
+    private JPanel crearPanelOptimizar() {
+    JPanel panel = new JPanel(new GridBagLayout());
+    panel.setBackground(new Color(245, 248, 255));
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(20, 20, 20, 20);
+    gbc.fill = GridBagConstraints.BOTH;
+
+    JLabel titulo = new JLabel("Optimización de Asignación");
+    titulo.setFont(new Font("Segoe UI", Font.BOLD, 28));
+    titulo.setForeground(new Color(33, 37, 41));
+
+    JPanel resultadoPanel = new JPanel();
+    resultadoPanel.setLayout(new BoxLayout(resultadoPanel, BoxLayout.Y_AXIS));
+    resultadoPanel.setBackground(new Color(245, 248, 255));
+
+    JScrollPane scroll = new JScrollPane(resultadoPanel);
+    scroll.setPreferredSize(new Dimension(700, 300));
+    scroll.setBorder(BorderFactory.createLineBorder(new Color(180, 200, 240)));
+    scroll.getVerticalScrollBar().setUnitIncrement(16);
+
+    JButton btnOptimizar = new JButton("Iniciar Optimización") {
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(new Color(100, 149, 237));
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+            super.paintComponent(g);
+            g2.dispose();
+        }
+
+        @Override
+        protected void paintBorder(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setColor(new Color(70, 130, 180));
+            g2.setStroke(new BasicStroke(2));
+            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
+            g2.dispose();
+        }
+    };
+
+    btnOptimizar.setFont(new Font("Segoe UI", Font.BOLD, 18));
+    btnOptimizar.setForeground(Color.WHITE);
+    btnOptimizar.setContentAreaFilled(false);
+    btnOptimizar.setOpaque(false);
+    btnOptimizar.setFocusPainted(false);
+    btnOptimizar.setPreferredSize(new Dimension(260, 45));
+    btnOptimizar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+
+    // Acción del botón
+    btnOptimizar.addActionListener(e -> {
+        resultadoPanel.removeAll();
+
+        ArrayList<Mercaderia> mercaderias = OptimizadorCarga.cargarMercaderias("mercaderias.txt");
+        ArrayList<Remolque> remolques = OptimizadorCarga.cargarRemolques("remolques.txt");
+        ArrayList<Asignacion> asignaciones = OptimizadorCarga.optimizarAsignacion(remolques, mercaderias);
+
+        for (Asignacion asignacion : asignaciones) {
+            JPanel card = new JPanel();
+            card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+            card.setBackground(Color.WHITE);
+            card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 220, 250), 1, true),
+                BorderFactory.createEmptyBorder(10, 15, 10, 15)
+            ));
+            card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 140));
+            card.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            JLabel remolqueLabel = new JLabel(" Remolque: " + asignacion.getRemolque().getNombre());
+            JLabel mercaLabel = new JLabel(" Mercadería ID: " + asignacion.getMercaderia().getId() +
+                                           " | Destino: " + asignacion.getMercaderia().getDestino() +
+                                           " | Peso: " + asignacion.getMercaderia().getPeso() + " kg");
+            JLabel distanciaLabel = new JLabel(" Distancia Total: " + (asignacion.getMercaderia().getDistancia() * 2) + " km (ida y vuelta)");
+            JLabel costoLabel = new JLabel(" Costo de Transporte: $" + String.format("%.2f", asignacion.getCostoTransporte()) + " USD");
+
+            Font font = new Font("Segoe UI", Font.PLAIN, 16);
+            remolqueLabel.setFont(font);
+            mercaLabel.setFont(font);
+            distanciaLabel.setFont(font);
+            costoLabel.setFont(font);
+
+            card.add(remolqueLabel);
+            card.add(Box.createVerticalStrut(5));
+            card.add(mercaLabel);
+            card.add(Box.createVerticalStrut(5));
+            card.add(distanciaLabel);
+            card.add(Box.createVerticalStrut(5));
+            card.add(costoLabel);
+
+            resultadoPanel.add(Box.createVerticalStrut(10));
+            resultadoPanel.add(card);
+        }
+
+        resultadoPanel.revalidate();
+        resultadoPanel.repaint();
+    });
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.gridwidth = 2;
+    gbc.anchor = GridBagConstraints.CENTER;
+    panel.add(titulo, gbc);
+
+    gbc.gridy++;
+    gbc.insets = new Insets(10, 10, 10, 10);
+    panel.add(btnOptimizar, gbc);
+
+    gbc.gridy++;
+    gbc.weightx = 1;
+    gbc.weighty = 1;
+    panel.add(scroll, gbc);
+
+    return panel;
+}
+
+
+
 
 
     private void actualizarDistancia() {
