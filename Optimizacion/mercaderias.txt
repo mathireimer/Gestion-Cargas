@@ -1,3 +1,8 @@
 ID: 1, Peso: 2.0, Volumen: 4.0, Destino: Lambaré, Distancia: 12
 ID: 2, Peso: 5.0, Volumen: 2.0, Destino: Ciudad del Este, Distancia: 327
 ID: 3, Peso: 4.0, Volumen: 4.0, Destino: Encarnación, Distancia: 375
+ID: 4, Peso: 150.0, Volumen: 10.0, Destino: Lambaré, Distancia: 12
+ID: 5, Peso: 8.0, Volumen: 10.0, Destino: Canindeyu, Distancia: 425
+ID: 6, Peso: 5.0, Volumen: 49.0, Destino: Ciudad del Este, Distancia: 327
+ID: 7, Peso: 48.0, Volumen: 27.0, Destino: Encarnación, Distancia: 375
+ID: 8, Peso: 150.0, Volumen: 10.0, Destino: Encarnación, Distancia: 375

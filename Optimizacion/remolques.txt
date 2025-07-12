@@ -1,3 +1,6 @@
 ID: 1, Nombre: volvo, Volumen: 10.0, Peso: 10.0
 ID: 2, Nombre: mercedes, Volumen: 5.0, Peso: 5.0
 ID: 3, Nombre: scania, Volumen: 15.0, Peso: 15.0
+ID: 4, Nombre: hola, Volumen: 100.0, Peso: 100.0
+ID: 5, Nombre: que tal, Volumen: 200.0, Peso: 200.0
+ID: 6, Nombre: Scania 360, Volumen: 20000.0, Peso: 15.0
